@@ -49,6 +49,8 @@ compile_optimizer = ['adam','sgd','adagrad','adadelta','rmsprop','optimizer','na
 compile_loss_probalistic = ['binary_crossentropy','categorical_crossentropy','sparse_categorical_crossentropy','poisson','KLDivergence','kl_divergence']
 compile_loss_regression = ['mean_squared_error','mean_absolute_error','mean_absolute_percentage_error','mean_squared_logarithmic_error','cosine_similarity','huber','log_cosh']
 compile_loss_hinge = ['hinge','squared_hinge','categorical_hinge']
+compile_metrics = ['accuracy','binary_accuracy','binary_crossentropy','categorical_accuracy','categorical_crossentropy','categorical_hinge','cosine_similarity','f1_score','fbeta_score','hinge','kullback_leibler_divergence','logcosh','mean','mean_absolute_error','mean_absolute_percentage_error','mean_squared_error','mean_squared_logarithmic_error','mean_tensor','poisson','r2_score','root_mean_squared_error','sparse_categorical_accuracy','sparse_categorical_crossentropy','sparse_top_k_categorical_accuracy','squared_hinge','sum','top_k_categorical_accuracy','']
+
 
 # create selectbox for which loss class to use probabilistic, regression or hinge
 output_goal = ['predict probability distribution', 'predict continues numerical value','predict classification']
@@ -81,8 +83,11 @@ with st.sidebar:
     else:
         compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_hinge)
 
-    # select what kind of outpot the model is used for
+    # select what kind of optimizer model should use in compile
     compile_optimizer_select = st.selectbox('Compile optimizer select',compile_optimizer)
+
+    # select what kind of metric model should use in compile
+    compile_metric_select = st.selectbox('Compile metric select',compile_metrics)
 
     # Define the number of neurons in the output layer
     output_neurons = st.slider('How many output Neurons?',min_value=1,max_value=10,value=1,step=1)
@@ -219,7 +224,7 @@ with tab4:
     #st.markdown(nn_summary)
 
     # Compile the Sequential model
-    nn.compile(loss=compile_loss_select_used, optimizer=compile_optimizer_select, metrics=["accuracy"])
+    nn.compile(loss=compile_loss_select_used, optimizer=compile_optimizer_select, metrics=compile_metric_select)
 
     # Fit the model using 50 epochs and the training data
     fit_model = nn.fit(X_train_scaled, y_train, epochs=n_epochs)
