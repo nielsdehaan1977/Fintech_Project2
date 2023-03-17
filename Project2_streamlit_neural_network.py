@@ -71,7 +71,7 @@ with st.sidebar:
     features_select = st.multiselect("Select X columns",options=column_names_x, default=column_names_x)
     
     # select what kind of outpot the model is used for
-    compile_loss_select = st.selectbox('Compile Loss Selection Probalistic',output_goal)
+    compile_loss_select = st.selectbox('Compile Loss Selection Model',output_goal)
 
     # Change compile loss based on compile loss select
     if compile_loss_select == 'predict probability distribution':
@@ -100,7 +100,7 @@ with st.sidebar:
     layer_2_activation = st.selectbox('Layer 2 Activation',activations_layers)
 
     # create drop down to select how many epochs to run
-    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500,1000],index=0)
+    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500],index=0)
     
 
     
@@ -231,7 +231,7 @@ with tab4:
 
 
     # Set the model's file path
-    file_path = Path(f'./Resources/MODEL_output_neurons{output_neurons}_layer1_nodes_{hidden_nodes_layer_1}_layer2_nodes_{hidden_nodes_layer_2}_model_loss{model_loss:.2f}_model_accuracy{model_accuracy:.2f}.h5')
+    file_path = Path(f'./Resources/MODEL_output_neurons{output_neurons}_layer1_nodes_{hidden_nodes_layer_1}_layer2_nodes_{hidden_nodes_layer_2}_epochs_{n_epochs}_model_loss{model_loss:.2f}_model_accuracy{model_accuracy:.2f}.h5')
 
     # Export your model to a HDF5 file
     nn.save(file_path)
