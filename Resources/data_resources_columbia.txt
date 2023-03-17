@@ -1,0 +1,6 @@
+https://data.world/
+https://www.kaggle.com/
+https://data.gov/
+https://github.com/n0shake/Public-APIs
+https://github.com/Kikobeats/awesome-api
+https://benjamin-libor.medium.com/a-curated-collection-of-over-150-apis-to-build-great-products-fdcfa0f361bc
