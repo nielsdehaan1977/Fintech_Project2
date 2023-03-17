@@ -81,6 +81,9 @@ with st.sidebar:
     else:
         compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_hinge)
 
+    # select what kind of outpot the model is used for
+    compile_optimizer_select = st.selectbox('Compile optimizer select',compile_optimizer)
+
     # Define the number of neurons in the output layer
     output_neurons = st.slider('How many output Neurons?',min_value=1,max_value=10,value=1,step=1)
     
@@ -216,7 +219,7 @@ with tab4:
     #st.markdown(nn_summary)
 
     # Compile the Sequential model
-    nn.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+    nn.compile(loss=compile_loss_select_used, optimizer=compile_optimizer_select, metrics=["accuracy"])
 
     # Fit the model using 50 epochs and the training data
     fit_model = nn.fit(X_train_scaled, y_train, epochs=n_epochs)
