@@ -42,6 +42,17 @@ if not my_cat_variables_serie.empty:
 else:
     pass
 
+# create variables that are inputs into the models, activations, optimizers and loss variables
+activations_layers = ['relu','selu','deserialize','elu','exponential','gelu','get','hard_sigmoid','linear','serialize','sigmoid','softmax','softplus','softsign','swish','tanh']
+activations_output = ['sigmoid','relu','selu','deserialize','elu','exponential','gelu','get','hard_sigmoid','linear','serialize','softmax','softplus','softsign','swish','tanh']
+compile_optimizer = ['adam','sgd','adagrad','adadelta','rmsprop','optimizer','nadam','ftrl','adamax']
+compile_loss_probalistic = ['binary_crossentropy','categorical_crossentropy','sparse_categorical_crossentropy','poisson','KLDivergence','kl_divergence']
+compile_loss_regression = ['mean_squared_error','mean_absolute_error','mean_absolute_percentage_error','mean_squared_logarithmic_error','cosine_similarity','huber','log_cosh']
+compile_loss_hinge = ['hinge','squared_hinge','categorical_hinge']
+
+# create selectbox for which loss class to use probabilistic, regression or hinge
+output_goal = ['predict probability distribution', 'predict continues numerical value','predict classification']
+
 
 # Create list of columns names to select as X features and y label
 columns_names_all = df.columns.tolist()
@@ -49,23 +60,6 @@ columns_names_all = df.columns.tolist()
 # Create sidebar with user input for neural network
 with st.sidebar:
     st.header('Selection Options')
-    # create slider for user to indicate how much training data to select:
-    training_data_depth = st.slider('How large should the testing set be?',min_value=10, max_value=100,value=50,step=10) 
-    
-    # Define the number of neurons in the output layer
-    output_neurons = st.slider('How many output Neurons?',min_value=1,max_value=10,value=1,step=1)
-
-    # Define the number of hidden nodes for the first hidden layer
-    hidden_nodes_layer_1 = st.slider('How many hidden nodes in layer 1?',min_value=1,max_value=10,value=2,step=1)
-
-    # Define the number of hidden nodes for the second hidden layer
-    hidden_nodes_layer_2 = st.slider('How many hidden nodes in layer 2?',min_value=0,max_value=5,value=1,step=1)
-
-    # create drop down to select the amount of n_estimators
-    n_estimators = st.selectbox('How many estimators',[100,200,300,'no limit'],index = 0)
-    
-    # create drop down to select how many epochs to run
-    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500,1000],index=0)
     
     # Select y column from list of column names
     label_select = st.selectbox("Select Y column", options=columns_names_all)
@@ -75,6 +69,40 @@ with st.sidebar:
 
     # Create a multi select box for users to select as features
     features_select = st.multiselect("Select X columns",options=column_names_x, default=column_names_x)
+    
+    # select what kind of outpot the model is used for
+    compile_loss_select = st.selectbox('Compile Loss Selection Probalistic',output_goal)
+
+    # Change compile loss based on compile loss select
+    if compile_loss_select == 'predict probability distribution':
+        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_probalistic)
+    elif compile_loss_select == 'predict continues numerical value':
+        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_regression)
+    else:
+        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_hinge)
+
+    # Define the number of neurons in the output layer
+    output_neurons = st.slider('How many output Neurons?',min_value=1,max_value=10,value=1,step=1)
+    
+    # Define activation for output layer
+    output_activation = st.selectbox('Output Layer Activation',activations_output)
+
+    # Define the number of hidden nodes for the first hidden layer
+    hidden_nodes_layer_1 = st.slider('How many hidden nodes in layer 1?',min_value=1,max_value=10,value=2,step=1)
+
+    # Define activation for hidden layer1
+    layer_1_activation = st.selectbox('Layer 1 Activation',activations_layers)
+
+    # Define the number of hidden nodes for the second hidden layer
+    hidden_nodes_layer_2 = st.slider('How many hidden nodes in layer 2?',min_value=0,max_value=5,value=1,step=1)
+
+    # Define activation for hidden layer2
+    layer_2_activation = st.selectbox('Layer 2 Activation',activations_layers)
+
+    # create drop down to select how many epochs to run
+    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500,1000],index=0)
+    
+
     
 
     #st.write(list_of_columns)
@@ -90,7 +118,7 @@ with tab1:
 
     st.text('In this project we try to predict if a person has diabetes using machine learning')
 
-    st.image('Images/Machine_Learning.jpg',use_column_width=True)
+    st.image('Images/Neural_Networks_2.jpg',use_column_width=True)
 
 
     
@@ -172,19 +200,39 @@ with tab4:
     number_output_neurons = 1
 
     # Select Model
-    model = LogisticRegression(random_state=1)
+    nn = Sequential()
     
-    # Fit Model using training data
-    lr_original_model = model.fit(X_train,y_train)
+    # Add the first hidden layer
+    nn.add(Dense(units=hidden_nodes_layer_1, input_dim=number_input_features, activation=layer_1_activation))
 
-    # Make a prediction using the testing data
-    y_original_pred = lr_original_model.predict(X_test)
+    # Add the second hidden layer
+    nn.add(Dense(units=hidden_nodes_layer_2, activation=layer_2_activation))
 
-    conf_matrix = confusion_matrix(y_test,y_original_pred)
-    st.write(conf_matrix)
+    # Add the output layer to the model specifying the number of output neurons and activation function
+    nn.add(Dense(units=number_output_neurons, activation=output_activation))
 
-    class_rep = classification_report_imbalanced(y_test,y_original_pred)
-    st.write(class_rep)
+    #nn_summary = nn.summary()
+    #st.subheader('Neural Network Summary')
+    #st.markdown(nn_summary)
+
+    # Compile the Sequential model
+    nn.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+
+    # Fit the model using 50 epochs and the training data
+    fit_model = nn.fit(X_train_scaled, y_train, epochs=n_epochs)
+
+    # Evaluate the model loss and accuracy metrics using the evaluate method and the test data
+    model_loss, model_accuracy = nn.evaluate(X_test_scaled, y_test, verbose=2)
+
+    # Display the model loss and accuracy results
+    #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
+    st.subheader('Neural Network Loss and Model Accuracy')
+    st.write(f'Loss: {model_loss:.3f}, Accuracy: {model_accuracy:.3f}')
 
 
+    # Set the model's file path
+    file_path = Path(f'./Resources/MODEL_output_neurons{output_neurons}_layer1_nodes_{hidden_nodes_layer_1}_layer2_nodes_{hidden_nodes_layer_2}_model_loss{model_loss:.2f}_model_accuracy{model_accuracy:.2f}.h5')
+
+    # Export your model to a HDF5 file
+    nn.save(file_path)
     
