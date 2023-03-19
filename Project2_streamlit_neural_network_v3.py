@@ -14,7 +14,7 @@ from imblearn.under_sampling import RandomUnderSampler
 tab = st.container()
 
 #create tabs for display in steamlit
-tab1, tab2, tab3, tab4, tab5 = st.tabs(['Project Objective','Data','Data cleaning and analysis','Machine Learning Model', 'Predictions'])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(['Project Objective','Original Data','Data Preparation','Machine Learning Model', 'Predictions'])
 
 # Import Data
 # set data path
@@ -58,7 +58,7 @@ compile_metrics = ['accuracy','binary_accuracy','binary_crossentropy','categoric
 output_goal = ['predict probability distribution', 'predict continues numerical value','predict classification']
 
 # create selectbox for sampling oversampling, undersampling or no sampling (use dataset as is)
-sampling_dataset = ['None',RandomOverSampler,RandomUnderSampler]
+sampling_dataset = ['None','RandomOverSampler','RandomUnderSampler']
 
 # Create list of columns names to select as X features and y label
 columns_names_all = df.columns.tolist()
@@ -90,9 +90,11 @@ with st.sidebar:
     else:
         compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_hinge)
 
+    # indicate to use standard scaler yes/no
+    standard_scaler_select = st.radio('Use Standard Scaler (Yes/No)',('Yes','No'))
+
     # Indicate to use random oversampling or undersampling or none
     sampling_dataset_select = st.selectbox('Select Sampling of DataSet',sampling_dataset)
-
 
     # select what kind of optimizer model should use in compile
     compile_optimizer_select = st.selectbox('Compile optimizer select',compile_optimizer)
@@ -119,12 +121,8 @@ with st.sidebar:
     layer_2_activation = st.selectbox('Layer 2 Activation',activations_layers)
 
     # create drop down to select how many epochs to run
-    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500],index=0)
+    n_epochs = st.selectbox('How many epochs would you like to run',[20,50,100,200,500,1000],index=0)
     
-
-    
-
-    #st.write(list_of_columns)
 
 # INTRODUCTION TAB PROJECT OBJECTIVE
 with tab1:
@@ -161,7 +159,7 @@ with tab2:
     st.write(df.dtypes)
 
     # Count and display amount of different values in y (label)
-    st.header('Distribution of selected y label')
+    st.header('Distribution of y label original data')
     column_y_values = df[label_select].value_counts()
     st.write(column_y_values)
 
@@ -172,62 +170,66 @@ with tab2:
     st.subheader('Distribution Chart')
     st.bar_chart(BMI_dist)
 
-# DATA CLEANING AND ANALYSIS TAB
+# DATA Preparation
 with tab3:
-    st.header('Data Cleaning and Analysis')
-
-    st.markdown('* **My first feature **')
-
-# MACHINE LEARNING MODEL TAB
-with tab4:
-    st.header('Train Model')
-    st.text('Use the following model')
-
-    # create 2 columns in model training tab
-    sel_col,disp_col = st.columns(2)
+    st.header('Data Preparation')
 
     # Create the labels set (y) from the “Outcome” column, and then create the features (X) DataFrame from the remaining columns.
     X = df[features_select]
     y = df[label_select]
 
-    # Check if label is properly balanced
-    data_org = y.value_counts()
-    st.write(data_org)
+    # Create a StandardScaler instance if requested by user
+    if standard_scaler_select == 'Yes':
+        scaler = StandardScaler()
 
-    # Assign a random_state of 1 to the function
-    X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=test_data_select,random_state=1) 
-
-    # If required by input from user implement sampling requested (standard is NONE)
-    if sampling_dataset_select !='None':
-        random_sampler = sampling_dataset_select(random_state=1)
-
-        # Fit the original training data to the random_oversampler model
-        X, y = random_sampler.fit_resample(X_train,y_train)
+        # Fit the scaler to the features training dataset
+        X_scaled = scaler.fit_transform(X)
     else:
-        pass
+        # If scaler should not be applied just name X --> X-scaler (to make further processing possible with one variable)
+        X_scaled = X
+
+    # Display to be used X dataframe indicate if standard scaler is used yes/no
+    st.subheader(f'Features DataFrame (Standard Scaler Used? {standard_scaler_select})')
+    st.write(X_scaled)
+
+    # Split up data using train test split
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled,y,test_size=test_data_select,random_state=1) 
+
+    # check the split up data set
+    xtrain_count = X_train.shape[0]
+    xtest_count = X_test.shape[0]
+    ytrain_count = y_train.shape[0]
+    ytest_count = y_test.shape[0]
+
+    st.subheader('data after train test split')
+    st.write(f'xtrain = {xtrain_count} xtest = {xtest_count} Ytrain = {ytrain_count} ytest_count = {ytest_count}')
+
+    # apply the selected sampling method to the dataset
+    if sampling_dataset_select == 'RandomOverSampler':
+        sampler = RandomOverSampler(random_state=1)
+        X_resampled, y_resampled = sampler.fit_resample(X_train, y_train)
+    elif sampling_dataset_select == 'RandomUnderSampler':
+        sampler = RandomUnderSampler(random_state=1)
+        X_resampled, y_resampled = sampler.fit_resample(X_train, y_train)
+    else:
+        X_resampled, y_resampled = X_train, y_train
 
 
+    # Count the distinct values of the resampled labels data
+    y_resampled_count = y_resampled.value_counts()
+    st.subheader('resampled_count')
+    st.write(y_resampled_count)
 
-    # Create a StandardScaler instance
-    scaler = StandardScaler()
-
-    # Fit the scaler to the features training dataset
-    X_scaler = scaler.fit(X_train)
-
-    # Fit the scaler to the features training dataset
-    X_train_scaled = X_scaler.transform(X_train)
-    X_test_scaled = X_scaler.transform(X_test)
-
+# MACHINE LEARNING MODEL TAB
+with tab4:
+    st.header('Neural Network')
+    
     # Define the the number of inputs (features) to the model
-    number_input_features = len(X_train.iloc[0])
+    number_input_features = len(X.iloc[0])
 
-    # Review the number of features
-    number_input_features
+    # Review the number of input features
     st.subheader('Number of input features is:')
     st.write(number_input_features)
-
-    # Define the number of neurons in the output layer
-    number_output_neurons = 1
 
     # Select Model
     nn = Sequential()
@@ -239,20 +241,16 @@ with tab4:
     nn.add(Dense(units=hidden_nodes_layer_2, activation=layer_2_activation))
 
     # Add the output layer to the model specifying the number of output neurons and activation function
-    nn.add(Dense(units=number_output_neurons, activation=output_activation))
-
-    #nn_summary = nn.summary()
-    #st.subheader('Neural Network Summary')
-    #st.markdown(nn_summary)
+    nn.add(Dense(units=output_neurons, activation=output_activation))
 
     # Compile the Sequential model
     nn.compile(loss=compile_loss_select_used, optimizer=compile_optimizer_select, metrics=compile_metric_select)
 
-    # Fit the model using 50 epochs and the training data
-    fit_model = nn.fit(X_train_scaled, y_train, epochs=n_epochs)
+    # Fit the model using n_epochs variable epochs and the training data
+    fit_model = nn.fit(X_resampled, y_resampled, epochs=n_epochs)
 
     # Evaluate the model loss and accuracy metrics using the evaluate method and the test data
-    model_loss, model_accuracy = nn.evaluate(X_test_scaled, y_test, verbose=2)
+    model_loss, model_accuracy = nn.evaluate(X_test, y_test, verbose=2)
 
     # Display the model loss and accuracy results
     #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
