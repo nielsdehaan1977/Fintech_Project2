@@ -9,6 +9,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+data_source = 'https://www.kaggle.com/datasets/mathchi/diabetes-data-set'
 
 # create tab as container
 tab = st.container()
@@ -77,18 +81,18 @@ with st.sidebar:
     features_select = st.multiselect("Select X columns",options=column_names_x, default=column_names_x)
     
     # Select the percentage of training data you want to use:
-    test_data_select = st.slider('What percentage of data should be test data?',min_value=0.1,max_value=1.0,value=0.3,step=0.1)
+    test_data_select = st.slider('What percentage of data should be test data?',min_value=0.1,max_value=1.0,value=0.2,step=0.1)
 
     # select what kind of outpot the model is used for
-    compile_loss_select = st.selectbox('Compile Loss Selection Model',output_goal)
+    compile_loss_select = st.selectbox('Model Loss Selection Model',output_goal)
 
     # Change compile loss based on compile loss select
     if compile_loss_select == 'predict probability distribution':
-        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_probalistic)
+        compile_loss_select_used = st.selectbox('Model Loss Selection Options',compile_loss_probalistic)
     elif compile_loss_select == 'predict continues numerical value':
-        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_regression)
+        compile_loss_select_used = st.selectbox('Model Loss Selection Options',compile_loss_regression)
     else:
-        compile_loss_select_used = st.selectbox('Compile Loss Selection Options',compile_loss_hinge)
+        compile_loss_select_used = st.selectbox('Model Loss Selection Options',compile_loss_hinge)
 
     # indicate to use standard scaler yes/no
     standard_scaler_select = st.radio('Use Standard Scaler (Yes/No)',('Yes','No'))
@@ -97,10 +101,10 @@ with st.sidebar:
     sampling_dataset_select = st.selectbox('Select Sampling of DataSet',sampling_dataset)
 
     # select what kind of optimizer model should use in compile
-    compile_optimizer_select = st.selectbox('Compile optimizer select',compile_optimizer)
+    compile_optimizer_select = st.selectbox('Model optimizer select',compile_optimizer)
 
     # select what kind of metric model should use in compile
-    compile_metric_select = st.selectbox('Compile metric select',compile_metrics)
+    compile_metric_select = st.selectbox('Model metric select',compile_metrics)
 
     # Define the number of neurons in the output layer
     output_neurons = st.slider('How many output Neurons?',min_value=1,max_value=10,value=1,step=1)
@@ -109,13 +113,13 @@ with st.sidebar:
     output_activation = st.selectbox('Output Layer Activation',activations_output)
 
     # Define the number of hidden nodes for the first hidden layer
-    hidden_nodes_layer_1 = st.slider('How many hidden nodes in layer 1?',min_value=1,max_value=10,value=2,step=1)
+    hidden_nodes_layer_1 = st.slider('How many hidden nodes in layer 1?',min_value=1,max_value=50,value=2,step=1)
 
     # Define activation for hidden layer1
     layer_1_activation = st.selectbox('Layer 1 Activation',activations_layers)
 
     # Define the number of hidden nodes for the second hidden layer
-    hidden_nodes_layer_2 = st.slider('How many hidden nodes in layer 2?',min_value=0,max_value=10,value=1,step=1)
+    hidden_nodes_layer_2 = st.slider('How many hidden nodes in layer 2?',min_value=0,max_value=50,value=1,step=1)
 
     # Define activation for hidden layer2
     layer_2_activation = st.selectbox('Layer 2 Activation',activations_layers)
@@ -127,7 +131,7 @@ with st.sidebar:
 # INTRODUCTION TAB PROJECT OBJECTIVE
 with tab1:
 
-    st.title('Machine Learning Diabetes Predictions')
+    st.title('Neural Network Predictions')
 
     st.header('Project Objective:')
 
@@ -146,9 +150,9 @@ with tab2:
     # type header of the tab
     st.header('Data used for Project')
     # type where you find the dataset
-    st.text('I found this dataset on kaggle on below link')
+    st.text('Dataset origin: Data found on kaggle on below link')
     # create link to dataset used
-    st.write('Please click here for dataset [link](https://www.kaggle.com/datasets/mathchi/diabetes-data-set)')
+    st.write(f'Please click here for dataset [link]({data_source})')
 
     # Display dataset in tab
     st.subheader('Display first 5 rows of Data')
@@ -166,9 +170,16 @@ with tab2:
     # Create a data distribution
     BMI_dist = pd.DataFrame(df['BMI'].value_counts())
     
-    # create a barchart of the distribution
-    st.subheader('Distribution Chart')
-    st.bar_chart(BMI_dist)
+    # Create a correlation matrix for the dataframe:
+    corr_matrix = df[features_select + [label_select]].corr()
+    
+    # Create a heatmap of the correlation matrix
+    fig, ax = plt.subplots()
+    sns.heatmap(corr_matrix,annot=True,cmap='inferno',ax=ax)
+    
+    #display correlation matrix heatmap in streamlit
+    st.subheader('Correlation matrix heatmap Original Data')
+    st.pyplot(fig)
 
 # DATA Preparation
 with tab3:
@@ -217,7 +228,7 @@ with tab3:
 
     # Count the distinct values of the resampled labels data
     y_resampled_count = y_resampled.value_counts()
-    st.subheader('resampled_count')
+    st.subheader(f'y label to be used (resampling method used: {sampling_dataset_select})')
     st.write(y_resampled_count)
 
 # MACHINE LEARNING MODEL TAB
@@ -227,9 +238,15 @@ with tab4:
     # Define the the number of inputs (features) to the model
     number_input_features = len(X.iloc[0])
 
-    # Review the number of input features
-    st.subheader('Number of input features is:')
-    st.write(number_input_features)
+    # Create overview of features of Neural Network 
+    features_nn = ['Input Features', 'Amount of Hidden Layers Layer 1','Layer 1 Optimizer', 'Amount of Hidden Layers Layer 2','Layer 2 Optimizer', 'Amount of Output Layer(s)', 'Output Layer Activation','Standard Scaler', 'Sampling','Epochs']
+    inputs_nn = [number_input_features, hidden_nodes_layer_1,layer_1_activation, hidden_nodes_layer_2,layer_2_activation, output_neurons,output_activation, standard_scaler_select, sampling_dataset_select,n_epochs]
+    data_nn = {'Features_nn':features_nn,'Input nn':inputs_nn}
+    nn_characteristics = pd.DataFrame(data_nn)
+    
+    #show neural network characteristics in streamlit
+    st.subheader('Neural Network Characteristics')
+    st.write(nn_characteristics)
 
     # Select Model
     nn = Sequential()
@@ -243,9 +260,9 @@ with tab4:
     # Add the output layer to the model specifying the number of output neurons and activation function
     nn.add(Dense(units=output_neurons, activation=output_activation))
 
-    # Compile the Sequential model
+    # Compile the Sequential model_original
     nn.compile(loss=compile_loss_select_used, optimizer=compile_optimizer_select, metrics=compile_metric_select)
-
+    
     # Fit the model using n_epochs variable epochs and the training data
     fit_model = nn.fit(X_resampled, y_resampled, epochs=n_epochs)
 
@@ -257,9 +274,18 @@ with tab4:
     st.subheader('Neural Network Loss and Model Accuracy')
     st.write(f'Loss: {model_loss:.3f}, Accuracy: {model_accuracy:.3f}')
 
+    # Create Loss and accuracy graph per Epoch passed
+    fig,ax =plt.subplots()
+    ax.plot(fit_model.history['loss'],label='Training Loss')
+    ax.plot(fit_model.history['accuracy'],label='Training Accuracy')
+    ax.set_xlabel('Epochs')
+    ax.set_ylabel('Loss/Accuracy')
+    ax.legend()
+    st.subheader('Loss and Accuracy graph per Epoch')
+    st.pyplot(fig)
 
     # Set the model's file path
-    file_path = Path(f'./Models/MODEL_output_neurons{output_neurons}_layer1_nodes_{hidden_nodes_layer_1}_layer2_nodes_{hidden_nodes_layer_2}_epochs_{n_epochs}_model_loss{model_loss:.2f}_model_accuracy{model_accuracy:.2f}.h5')
+    file_path = Path(f'./Models/{model_accuracy:.2f}(acc)_{model_loss:.2f}(loss)_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
 
     # Export your model to a HDF5 file
     nn.save(file_path)
