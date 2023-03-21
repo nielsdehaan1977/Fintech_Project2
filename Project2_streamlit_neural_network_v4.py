@@ -63,6 +63,8 @@ compile_loss_hinge = ['hinge','squared_hinge','categorical_hinge']
 compile_metrics = ['accuracy','binary_accuracy','binary_crossentropy','categorical_accuracy','categorical_crossentropy','categorical_hinge','cosine_similarity','f1_score','fbeta_score','hinge','kullback_leibler_divergence','logcosh','mean','mean_absolute_error','mean_absolute_percentage_error','mean_squared_error','mean_squared_logarithmic_error','mean_tensor','poisson','r2_score','root_mean_squared_error','sparse_categorical_accuracy','sparse_categorical_crossentropy','sparse_top_k_categorical_accuracy','squared_hinge','sum','top_k_categorical_accuracy','']
 
 
+
+
 # create selectbox for which loss class to use probabilistic, regression or hinge
 output_goal = ['predict probability distribution', 'predict continues numerical value','predict classification']
 
@@ -300,28 +302,34 @@ with tab5:
     st.subheader('Model Used')
 
 
-# Add Caching decorator for loading model
-    @st.cache_resource 
+# # Add Caching decorator for loading model
 
-    # set folder path for stored models
-    folder_path = Path('./Models/')
 
-    def load_model(model_path):
-       # Load and process the file
-        model_selected = tf.keras.models.load_model(model_path)
-        return model_selected
+#     # set folder path for stored models
+#     folder_path = Path('./Models/')
+    
+#     @st.cache_resource 
+#     def select_model(model_path):
+#         model_list = os.listdir(folder_path)
 
-    # Get a list of all files in the folder
-    model_list = os.listdir(folder_path)
 
-    # Create a dropdown menu with the file names
-    selected_model = st.selectbox('Select a file', model_list)
+#     @st.cache_resource 
+#     def load_model(model_path):
+#        # Load and process the model
+#         model_selected = tf.keras.models.load_model(model_path)
+#         return model_selected
 
-    # Get the file path for the selected file
-    model_path = os.path.join(folder_path, selected_model)
+#     # Get a list of all files in the folder
+#     model_list = os.listdir(folder_path)
 
-    # Call the select_model function to load the model
-    loaded_model = load_model(file_path)
+#     # Create a dropdown menu with the file names
+#     selected_model = st.selectbox('Select a file', model_list)
 
-    # # Print the selected file contents
-    # st.write('Model Selected:', loaded_model)
+#     # Get the file path for the selected file
+#     model_path = os.path.join(folder_path, selected_model)
+
+#     # Call the select_model function to load the model
+#     loaded_model = load_model(file_path)
+
+#     # # Print the selected file contents
+#     # st.write('Model Selected:', loaded_model)

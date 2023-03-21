@@ -1,8 +1,8 @@
 import os
 import streamlit as st
 
-# Set the folder path
-folder_path = 'C:/Users/Username/Folder/'
+# set folder path for stored models
+folder_path = Path('./Models/')
 
 # Get a list of all files in the folder
 file_list = os.listdir(folder_path)
