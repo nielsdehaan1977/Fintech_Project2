@@ -295,17 +295,21 @@ with tab5:
     st.header('Predictions')
     st.subheader('Model Used')
 
-    # Set the folder path for outputted Models
-    folder_path = Path('./Model/')
+    select_best_model = st.button('Select Model to predict?')
 
-    # Get a list of all Models in the folder
-    file_list = os.listdir(folder_path)
+    if select_best_model:
+        
+        # Set the folder path for outputted Models
+        folder_path = Path('./Model/')
 
-    # Create a dropdown menu with the available Models
-    selected_file = st.selectbox('Select a file', file_list)
+        # Get a list of all Models in the folder
+        file_list = os.listdir(folder_path)
 
-    # Print the selected file name
-    st.write('You selected:', selected_file)
+        # Create a dropdown menu with the available Models
+        selected_file = st.selectbox('Select a file', file_list)
+
+        # Print the selected file name
+        st.write('You selected:', selected_file)
 
 
 
