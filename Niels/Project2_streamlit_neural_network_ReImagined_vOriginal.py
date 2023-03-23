@@ -19,7 +19,7 @@ import os
 tab = st.container()
 
 #create tabs for display in steamlit
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(['Project','Data Selection','Original Data','Data Preparation','Setup ML Model','Model Performance','Predictions','Recommendations'])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(['Project','Data Selection','Original Data','Data Preparation','Setup ML Model','Select Best Model','Predictions','Recommendations'])
 
 # Set Paths for different folders 
 images_path = Path('../Images/')
@@ -41,6 +41,7 @@ compile_metrics = ['accuracy','binary_accuracy','binary_crossentropy','categoric
 # create selectbox for which loss class to use probabilistic, regression or hinge
 output_goal = ['predict probability distribution', 'predict continues numerical value','predict classification']
 
+
 ### JASON --- Introduction to why this app is useful for insurance companies... 
 # INTRODUCTION TAB PROJECT OBJECTIVE
 with tab1:
@@ -54,13 +55,6 @@ with tab1:
     st.text('In this project we try to predict if a person has diabetes using machine learning')
     
     st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=True)
-
-@st.cache_data
-def load_selected_data(data_file_path):
-    df = pd.read_csv(data_file_path)
-    # drop empty columns instantly before going any further
-    df = df.dropna(axis='columns',how='all')
-    return df
 
 ### NIELS Streamlit app development
 # Create a TAB where user can select any csv file from set folder
@@ -92,10 +86,7 @@ with tab2:
         st.write('Data Selected:', data_file_path)
 
         # Read selected file with read_csv
-        df = load_selected_data(data_file_path)
-
-
-
+        df = pd.read_csv(data_file_path)
 
 ### NIELS --- streamlit appp fixing if other dataset is used program seems to run into run time error 
 
@@ -142,8 +133,6 @@ with tab4:
     st.write('If you want to change y Column, please go back to tab ORIGINAL DATA')
     st.write(df.head())     
 
-
-    
     # Display the correlation matrix between X features and y Label:
     # Create a correlation matrix for the dataframe before any adjustments
     corr_matrix = df[column_names_x + [label_select]].corr()
@@ -155,6 +144,7 @@ with tab4:
     #display correlation matrix heatmap in streamlit
     st.subheader('Correlation matrix heatmap Original Data')
     st.pyplot(fig) 
+
 
 # Create a Form to make changes to the original data
     with st.form(key='Data_select_1'):
@@ -174,10 +164,19 @@ with tab4:
         X_remaining_features = X.copy()
         st.write(X.head())
 
+    # Check dtypes of data
+    st.subheader('Dipslay datatypes of Remaining X Features')
+    x_remaining_dtypes = X.dtypes
+    st.write(x_remaining_dtypes)
+
     # check if there are categorial variables in the data yes/no if so use onehotencoder to encode variable in tje X dataframe
     categorical_variables = list(X.dtypes[X.dtypes == "object"].index)
     # make a serie of the categorical variables
     my_cat_variables_serie = pd.Series(categorical_variables)
+
+    #display if there are any categorical variables in dataset
+    st.header('Categorical Variables in adjusted Dataset')
+    st.write(my_cat_variables_serie)
 
     # check if there are any categorial variables if so us OneHotEncoder to make numbers out of categorical columns, else pass
     st.header('Categorical Variables Handling (If any)')
@@ -193,11 +192,8 @@ with tab4:
             # Create a button to select the Y column wihthn the form
             submit_button_ohe_select = st.form_submit_button(label='Apply')
 
-            if onehotenhancer_select == 'No':
-                exit()
-
             # Check if onehotenhancer need to applied according to user
-            else:
+            if onehotenhancer_select == 'Yes':
                   
                 # Create a OneHotEncoder instance
                 enc = OneHotEncoder(sparse=False)
@@ -217,37 +213,11 @@ with tab4:
                 st.subheader('Adjusted X features')
                 st.write(X.head())
 
-                # check if there are categorial variables in the data yes/no if so use onehotencoder to encode variable in tje X dataframe
-                categorical_variables_check2 = list(X.dtypes[X.dtypes == "object"].index)
-                # make a serie of the categorical variables
-                my_cat_variables_serie_check2 = pd.Series(categorical_variables_check2)
-
-                if not my_cat_variables_serie_check2.empty:
-                    st.write('Dataset still has categorical features, please use OneHotEnhancer to remove')
-                    exit()
-                else:
-                    pass
-
     # if there are nocategorial variables pass and print that there are no categorical variables available to use onehotenahncer on
     else:
         st.write('No categorical variables in Dataset')
         pass
-
-
-    # Check dtypes of data
-    st.subheader('Dipslay datatypes of Remaining X Features')
-    x_remaining_dtypes = X.dtypes
-    st.write(x_remaining_dtypes)
-
-    #display if there are any categorical variables in dataset
-    st.header('Categorical Variables in adjusted Dataset')
-    
-    # See if the remaining data set still has categorical variable yes/no if not pass, otherwise print the categorical variables
-    try:
-        st.write(my_cat_variables_serie_check2)
-    except:
-        pass
-        
+                
     # make a form in streamlit if you want to apply standard scaler to the dataset no/yes        
     with st.form(key='Data_select_3'):
         st.subheader('Would you like to apply Standard Scaler to the Dataset?')
@@ -256,7 +226,7 @@ with tab4:
         standard_scaler_select = st.radio('Apply Standard Scaler (No/Yes)',('No','Yes'))
 
         # Create a button to select to apply standard scaler
-        #submit_button_standard_scaler_select = st.form_submit_button(label='Apply')       
+        submit_button_standard_scaler_select = st.form_submit_button(label='Apply')       
 
         
         # Create a StandardScaler instance if requested by user
@@ -276,7 +246,7 @@ with tab4:
             st.write(X_scaled)
 
 
-    #with st.form(key='Data_select_4'):
+    with st.form(key='Data_select_4'):
         
         # Select the percentage of training data you want to use:
         st.subheader('Select the Percentage Amount of data to be used as test data')
@@ -394,12 +364,16 @@ with tab5:
         submit_button_nn_specifics = st.form_submit_button(label='Apply and Run') 
 
         # Create overview of features of Neural Network 
-        features_nn = ['Input Features', 'Amount of Hidden Layers Layer 1','Layer 1 Optimizer', 'Amount of Hidden Layers Layer 2','Layer 2 Optimizer', 'Amount of Output Layer(s)', 'Output Layer Activation','Standard Scaler', 'Sampling','Epochs','Model Optimizer']
-        inputs_nn = [number_input_features, hidden_nodes_layer_1,layer_1_activation, hidden_nodes_layer_2,layer_2_activation, output_neurons,output_activation, standard_scaler_select, sampling_dataset_select,n_epochs,compile_optimizer_select ]
+        features_nn = ['Input Features', 'Amount of Hidden Layers Layer 1','Layer 1 Optimizer', 'Amount of Hidden Layers Layer 2','Layer 2 Optimizer', 'Amount of Output Layer(s)', 'Output Layer Activation','Standard Scaler', 'Sampling','Epochs']
+        inputs_nn = [number_input_features, hidden_nodes_layer_1,layer_1_activation, hidden_nodes_layer_2,layer_2_activation, output_neurons,output_activation, standard_scaler_select, sampling_dataset_select,n_epochs]
         data_nn = {'Features_nn':features_nn,'Input nn':inputs_nn}
         nn_characteristics = pd.DataFrame(data_nn)
     
-        # Select Model
+        #show neural network characteristics in streamlit
+        st.subheader('Neural Network Characteristics')
+        st.write(nn_characteristics)    
+
+            # Select Model
         nn = Sequential()
         
         # Add the first hidden layer
@@ -416,45 +390,72 @@ with tab5:
         
         # Fit the model using n_epochs variable epochs and the training data
         fit_model = nn.fit(X_resampled, y_resampled, epochs=n_epochs)
-    
+
         # Evaluate the model loss and accuracy metrics using the evaluate method and the test data
         model_loss, model_accuracy = nn.evaluate(X_test, y_test, verbose=2)
 
+        # Display the model loss and accuracy results
+        #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
         st.subheader('Neural Network Loss and Model Accuracy')
         st.write(f'Loss: {model_loss:.3f}, Accuracy: {model_accuracy:.3f}')
 
-        
+        # Create Loss and accuracy graph per Epoch passed
+        fig,ax =plt.subplots()
+        ax.plot(fit_model.history['loss'],label='Training Loss')
+        ax.plot(fit_model.history['accuracy'],label='Training Accuracy')
+        ax.set_xlabel('Epochs')
+        ax.set_ylabel('Loss/Accuracy')
+        ax.legend()
+        st.subheader('Loss and Accuracy graph per Epoch')
+        st.pyplot(fig)
+
+#### ANDRE saving model correct????
+    # Ask user to Save Model yes/no if so export your model to a HDF5 file
+    with st.form(key='neural_net_feat_2'):
+        # Set the model's file path
         file_path = Path(f'../Models/{model_accuracy:.2f}(acc)_{model_loss:.2f}(loss)_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
-        nn.save(file_path)
-        st.write(f'Model save as: {file_path}')
+
+        save_model_select = st.radio('Save NN Model? (No/Yes)',('No','Yes'))
+
+        # Create a button to select to apply standard scaler
+        submit_button_save_model = st.form_submit_button(label='Save Model') 
+        
+        if save_model_select == 'Yes':
+            nn.save(file_path)
+            st.write(f'Model save as: {file_path}')
+        else:
+            st.write('Model not saved')
+            pass
 
 
-### ANDRE
-# Model Performace TAB
+### ANDRE 
+# Create form to select the best model and load that model into variable called model_loaded
 with tab6:
-    st.header('Performance of  Model:')
+    st.header('Select Best Model:')
     
-    # Display the model loss and accuracy results
-    #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
-    st.subheader('Neural Network Loss and Model Accuracy')
-    st.write(f'Loss: {model_loss:.3f}, Accuracy: {model_accuracy:.3f}')
+    st.subheader('Select Model to be used in Predictions')
+    #Set the folder path for outputted Models
+    with st.form(key='select_load_model_1'):
+    
+        # Get a list of all Models in the folder
+        model_list = os.listdir(model_path)
 
-    # Create Loss and accuracy graph per Epoch passed
-    fig,ax =plt.subplots()
-    ax.plot(fit_model.history['loss'],label='Training Loss')
-    ax.plot(fit_model.history['accuracy'],label='Training Accuracy')
-    ax.set_xlabel('Epochs')
-    ax.set_ylabel('Loss/Accuracy')
-    ax.legend()
-    st.subheader('Loss and Accuracy graph per Epoch')
-    st.pyplot(fig)
+        # Select h5 files only
+        h5_list = list(filter(lambda f: f.endswith('.h5'), model_list))
 
+        # Create a dropdown menu with the file names
+        selected_model = st.selectbox('Select a file', model_list)
 
-    #show neural network characteristics in streamlit
-    st.subheader('This is based on a Neural Network with the following Characteristics')
-    st.write(nn_characteristics)   
+        # Create Model_path where both folder and model saved in h5 format        
+        model_path = os.path.join(model_path, selected_model)
+        
+        # Create button to load model
+        submit_button_model = st.form_submit_button(label='Load Model')
+        
+        # Load selected Model into tf.kera.models.load_model
+        model_loaded = tf.keras.models.load_model(model_path)
 
-
+        st.write('Model Loaded:', model_path)
 
 
 #### MARC
@@ -463,11 +464,6 @@ with tab7:
     st.header('Predictions')
     # Check which features are left after removing uncorrelated ones for example
     #st.write(X_remaining_features)
-
-    # Load selected Model into tf.kera.models.load_model
-    model_loaded = tf.keras.models.load_model(file_path)   
-    st.write(f'Model Loaded: {file_path}')
-
 
 
     st.subheader('Input Form for User Input (only used X_Features in Model)')
