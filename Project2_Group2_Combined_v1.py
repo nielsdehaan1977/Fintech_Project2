@@ -16,6 +16,10 @@ import matplotlib.pyplot as plt
 import os
 
 ### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
+
+st.set_page_config(page_title="NN Diabetes Predictions", layout='wide')
+
+
 # create tab as container
 tab = st.container()
 
@@ -431,8 +435,8 @@ with tab5:
             st.subheader('Neural Network Loss and Model Accuracy')
             st.write(f'Loss: {model_loss:.3f}, Accuracy: {model_accuracy:.3f}')
             # Set file path for Regression model:
-            file_path_model = Path(f'{model_path}/{model_accuracy:.2f}(acc)_{model_loss:.2f}(loss)_{compile_loss_select}_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.json')
-            file_path_weights = Path(f'{model_path}/{model_accuracy:.2f}(acc)_{model_loss:.2f}(loss)_Probalisitic_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
+            file_path_model = Path(f'{model_path}/{model_accuracy:.3f}(acc)_{model_loss:.3f}(loss)_{compile_loss_select}_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.json')
+            file_path_weights = Path(f'{model_path}/{model_accuracy:.3f}(acc)_{model_loss:.3f}(loss)_Probalisitic_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
         
         # Evaluate the model loss and accuracy metrics using the evaluate method and the test data for regression
         elif compile_loss_select == 'Regression':
@@ -440,10 +444,23 @@ with tab5:
             st.subheader('Neural Network Loss and Model MSE')
             st.write(f'Loss: {loss:.3f}, Accuracy: {mse:.3f}')
             # Set file path for Regression model:
-            file_path_model = Path(f'{model_path}/{mse:.2f}(mse)_{loss:.2f}(loss)_{compile_loss_select}_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.json')
-            file_path_weights = Path(f'{model_path}/{mse:.2f}(mse)_{loss:.2f}(loss)_Regression_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
+            file_path_model = Path(f'{model_path}/{mse:.3f}(mse)_{loss:.3f}(loss)_{compile_loss_select}_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.json')
+            file_path_weights = Path(f'{model_path}/{mse:.3f}(mse)_{loss:.3f}(loss)_Regression_epochs_{n_epochs}_L1({hidden_nodes_layer_1})_L2({hidden_nodes_layer_2})_OutputLayer({output_neurons})_Scale_{standard_scaler_select}_Sampling_{sampling_dataset_select}.h5')
         else:
             pass
+        
+        # SAVE THE MODEL to specifiec locations a per above:
+        # Save Model in JSON Format
+        nn_json = nn.to_json()
+
+        # Write the model to the the file 
+        with open(file_path_model,'w') as json_file:
+            json_file.write(nn_json)
+        # Save the weights to the file path
+        nn.save_weights(file_path_weights)
+        
+        st.write(f'Model save as: {file_path_model}')
+        st.write(f'Model weights saved as: {file_path_weights}')
 
 
 ### ANDRE
@@ -452,6 +469,7 @@ with tab6:
     st.header('Performance of Model:')
     
     # Display the model loss and accuracy results
+    # HERE AGAIN WE ALREADY INCLUDED THE OTPION TO USE REGRESSION TO UNLOCK ADD REGRESSION TO OUTPUT_GOAL VARIABLE
     #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
     if compile_loss_select == 'Probalistic':
         st.subheader('Neural Network Loss and Model Accuracy')
@@ -469,7 +487,8 @@ with tab6:
 
         #show neural network characteristics in streamlit
         st.subheader('This is based on a Neural Network with the following Characteristics')
-        st.write(nn_characteristics)   
+        st.write(nn_characteristics)
+
     elif compile_loss_select == 'Regression':
         st.subheader('Regression Neural Network Loss mse')
         st.write(f'Loss:{loss:.3f}, mse: {mse:.3f}')
@@ -490,36 +509,13 @@ with tab6:
     else:
         pass
 
-    with st.form(key='nn_save_1'):
-        
-        save_model_select = st.radio('Save Model (No/Yes)',('No','Yes'))
-        submit_button_save_model = st.form_submit_button(label='Apply') 
-
-        if save_model_select == "Yes":
-            # Save Model in JSON Format
-            nn_json = nn.to_json()
-
-            # Write the model to the the file 
-            with open(file_path_model,'w') as json_file:
-                json_file.write(nn_json)
-            # Save the weights to the file path
-            nn.save_weights(file_path_weights)
-        
-            st.write(f'Model save as: {file_path_model}')
-            st.write(f'Model weights saved as: {file_path_weights}')
-        else:
-            st.write('Model not saved yet')
-            exit()
-
-
 
 #### MARC
-# Create Tab with Form fo ruser to put in patient values and make a prediction
+# Load Model and create Tab with Form fo ruser to put in patient values and make a prediction
 with tab7:
     st.header('Predictions')
 
-    # Load Model into tf.kera.models.load_model
-    
+    # Load Model
     with open(file_path_model,"r") as json_file:
         model_json = json_file.read()
     loaded_model = model_from_json(model_json)
@@ -528,54 +524,106 @@ with tab7:
 
     loaded_model.load_weights(file_path_weights)
     
-    # USE LOADED MODEL TO PREDICT POINTS FOR THE TEST DATA AND PRINT MSQ ERROR METRIC
+    # USE LOADED MODEL TO PREDICT POINTS FOR THE TEST DATA
     y_pred = loaded_model.predict(X_test)
 
-    results_model_test = y_pred[:5,:]
-    
-    st.write(results_model_test)
+    #st.write('Model Predictions based on Test Data')
+    #results_model_test = y_pred[:2,:]
+    #st.write(results_model_test)
 
-    # st.subheader('Input Form for User Input (only used X_Features in Model)')
-    # # Define function to create form fields based on column data type
-    # def form_input_field(X_feature, dtype):
-    #     if dtype == "object":
-    #         return st.text_input(X_feature)
-    #     elif dtype == "int64":
-    #         return st.number_input(X_feature)
-    #     elif dtype == "float64":
-    #         return st.number_input(X_feature, format="%f")
-    #     else:
-    #         return st.text_input(X_feature)
+    # only request questions to user for features that were used in the current model:
+    features_used_in_model = X_remaining_features.columns
+    # count how many features used in model 
+    number_of_features_used_in_model = len(features_used_in_model)
 
-    # # Define function to create form based on column headers and data types
-    # def create_form(remaining_columns):
-    #     for i in remaining_columns.columns:
-    #         dtype = remaining_columns[i].dtype
-    #         form_field = form_input_field(i, dtype)
-    #         st.write(form_field)
+    #st.write(number_of_features_used_in_model)
 
+    # Create input form for user/patient to input his/her data
+    st.title('Diabetes input form')
+    # make a counter for all the remainign features in this specific model
+    model_feature_number = 0
+    # make eampty list with answers:    
+    answers =[]
 
-    # with st.form(key='input_form_1'):
-    #     # Create the flexible form in this form by running functions above
-    #     create_form(X_remaining_features)
-
-    #     # Create a button to select to apply standard scaler
-    #     submit_button_save_user_input = st.form_submit_button(label='Save/Apply User Input') 
+    # Create a form that matches the remaining X features    
+    with st.form('flex_form'):
         
+        # make a for loop throught features used in model 
+        for model_feature in features_used_in_model:
+            # start counting features
+            model_feature_number += 1
+
+            # create input slider for gluvose bloodpressure and insuline
+            if model_feature == 'Glucose' or model_feature == 'BloodPressure' or model_feature == 'Insulin':
+                submitted = str('submitted') + str(model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=200,key=model_feature_number)
+                #st.write(submitted)
+                answers.append(submitted)
+            # create input slider from BMI skinthinkness and age
+            elif model_feature == 'BMI' or model_feature =='SkinThickness' or model_feature == 'Age':
+                submitted = str('submitted') + str(model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=100,key=model_feature_number)
+                #st.write(submitted)
+                answers.append(submitted)
+            # create input values for everything else
+            else:
+                submitted = str('submitted') + str(model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=15,key=model_feature_number)
+                #st.write(submitted)
+                answers.append(submitted)
+
+        #create submit button for all above input values    
+        submit_button_save_user_input = st.form_submit_button(label='Save/Apply User Input')
+
+        # when submit scores is pressed move on:
+        if submit_button_save_user_input:
+            #st.write(f'these are the answers given:{answers}')
+
+            # check if stardard scaler was applied to model input data
+            if standard_scaler_select == 'Yes':
+                
+                #make np array from answers:
+                input_answers = np.array(answers)
+                # reshape np array to be able to fit run thoruhg the model
+                input_answers = input_answers.reshape(1,-1)
+                # write input Answers
+                #st.write(input_answers)
+           
+                # Apply standard scaler to input answers
+                answers_scaled = scaler.transform(input_answers)
+                #st.write(answers_scaled)
+                
+                user_input_pred = loaded_model.predict(answers_scaled)
+                #st.write(f'prediction is, {user_input_pred}')
+                st.write(f'Diabetes Prediction based on scaled input data is, {user_input_pred[0]}')
+
+            else:
+
+                #make np array from answers:
+                input_answers = np.array(answers)
+                # reshape np array to be able to fit run thoruhg the model
+                input_answers = input_answers.reshape(1,-1)
+                
+                # Input raw input into model
+                user_input_pred = loaded_model.predict(input_answers)
+                #st.write(f'prediction is, {user_input_pred}')
+                st.write(f'Diabetes Prediction based on raw input data is, {user_input_pred[0]}')
+
+    # create header for prediction results
+    st.header('PREDICTIONS FOR DIABETES BASED ON MODEL')
+    # create subhedaer to highlight its based on the new input data
+    st.subheader('Diabetes prediction based on new input data:')
+
+    # create simple high/medium low diabetes risk result
+    if user_input_pred[0] >= 0.75:
+        st.subheader('High Risk of Diabetes')
+    elif user_input_pred[0]>0.50 <=0.75:
+        st.subheader('Medium Risk of Diabetes')
+    else:
+        st.subheader('Low Risk of Diabetes')
 
 
 
-        # # Reset index of new to build np array    
-        # x_remaining_array = x_remaining_dtypes.reset_index(drop=False)
-
-        # # rename column names
-        # x_remaining_array.rename(columns={x_remaining_array.columns[0]:'X_Features',x_remaining_array.columns[1]:'dtype'},inplace=True)
-
-        
-        # # # create nuympy array from X_remaining_features column names
-        # x_remaining_arr = x_remaining_array[['X_Features']].to_numpy()
-
-        # st.write(x_remaining_arr)
 
 #### JASON
 with tab8:
