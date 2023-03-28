@@ -115,10 +115,11 @@ The tool will go through the following steps:
 * Glucose level recommendations (normal, prediabetic, diabetic) are based on fasting plasma glucose levels. Though the dataset claims that a 2 hr oral glucose tolerance test (OGTT) was used, these glucose levels would indicate no patients are diabetic. However, these datapoints are relatively consistent with what would be seen with fasting plasma glucose (FPG) tests.
 * Blood pressure (BP) is specific to diastolic BP to remain consistant with ML model. Recommendations determined based on if patient has: normal/elevated BP, Stage 1 hypertension (HTN), Stage 2 HTN, or is in hypertensive crisis (emergent condition).
 * Diabetes Pedigree Function is a measure of how likely a patient is to develop diabetes based on family history. Patients separated into high or low risk based on if they have an above average DiabetesPedigreeFunction.
-* Insulin level recommendations are interesting because low and high insulin levels can both lead to complications. 
+* Insulin level recommendations are interesting because low and high insulin levels can both lead to complications. Recommendations made accordingly based on a normal insulin range of 16-166 uU/mL. 
+* Overall risk: based on cumulative input features run through the model, patients/users are grouped into high, moderate, and low risk categories for developing diabetes.
+* If a patient is considered high risk (>50% chance of developing diabetes), a medical expense estimator appears that allows patients to see an estimate of how much their medical expenses may increase if they are diagnosed with diabetes.
 
 ## Sources
-* Healthcare costs: https://www.cdc.gov/chronicdisease/programs-impact/pop/diabetes.htm#:~:text=%241%20out%20of%20every%20%244,caring%20for%20people%20with%20diabetes.&text=%24237%20billion%E2%80%A1(a)%20is,(a)%20on%20reduced%20productivity.&text=61%25%20of%20diabetes%20costs%20are,is%20mainly%20paid%20by%20Medicare.
 * Dataset: https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database
 * BMI: https://www.cdc.gov/healthyweight/assessing/index.html
 * Glucose:https://www.cdc.gov/diabetes/basics/getting-tested.html#:~:text=A%20fasting%20blood%20sugar%20level,higher%20indicates%20you%20have%20diabetes.
@@ -126,9 +127,10 @@ The tool will go through the following steps:
 * Diastolic BP: https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings
 * Diabetes Pedigree Function: https://assets.researchsquare.com/files/rs-1753046/v1_covered.pdf?c=1655141180
 * Insulin: https://emedicine.medscape.com/article/2089224-overview
+* Healthcare costs: https://www.cdc.gov/chronicdisease/programs-impact/pop/diabetes.htm#:~:text=%241%20out%20of%20every%20%244,caring%20for%20people%20with%20diabetes.&text=%24237%20billion%E2%80%A1(a)%20is,(a)%20on%20reduced%20productivity.&text=61%25%20of%20diabetes%20costs%20are,is%20mainly%20paid%20by%20Medicare.
 ## Contributor(s)
 
-This project was created by Niels de Haan (nlsdhn@gmail.com)
+This project was created by Niels de Haan (nlsdhn@gmail.com), Jason Steiner (jason.steiner@richmond.edu), 
 
 ---
 
