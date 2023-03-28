@@ -12,9 +12,10 @@
 ---
 ## Project2_Group2_Final_Draft.py
 ---
-### This notebook can be used as a template to build a model that can be used to predict whether a startup loan applicant will become a succesful business based upon a binary classification model. 
+### This application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a hlepful tool for insurance companies or healthcare organizations to identify patients that have a high risk of becoming diabetic. The tool could allow insurance companies or healthcare organizations to provide preventative care which would save the insurance company a lot of costs and could relieve pressure on the workload in healthcare organizations. 
+
 ---
-The tool can help to predict if a startup will become a succesful business. 
+The tool can help to predict based on user input what level of risk an individual is running to become diabetic and will give that individual an estimate on how much their healthcare insurance premium would go up if they don't take preventative action. 
 * The tool goes through on the following steps: 
 1. Prepare the data for use on a neural network model.
 2. Compile and evaluate a binary classification model using a neural network.
