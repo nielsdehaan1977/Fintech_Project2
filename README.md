@@ -4,13 +4,13 @@
 ---
 # Neural Networks and Diabetes Predictions. 
 ---
-## This jupyter notebook can be used as a template to create a binary classifier model that can to a certain degree predict whether an applicant will become a successful business. The model utilizes TensorFlow library to design a binary classification deep neural network model. This model use a dataset’s that contains information of more than 34,000 startup organizations and tries to predict whether a startup will be successful based on the features in the dataset. The notebook takes into consideration the number of inputs before determining the number of layers that the model will contain or the number of neurons on each layer. Then it compiles and fits the model and evaluates the binary classification model by calculating the model’s loss and accuracy.
+## This python code can be utilized as an app by running Streamlit. The app utilizes a Neural Network to predict the level of risk an individual runs based on mutliple input values like glucose levels, age, bloodpressure and BMI. Based on the input values the model will generate a prediction of the level of risk an individual runs of becoming a Diabetic. The code is run as a streamlit app to provide a user friendly interface. 
 
 
-![Neural_Networks_2.jpg](https://github.com/nielsdehaan1977/Fintech_Module13/blob/main/Images/Neural_Networks_2.jpg)
+![Neural_Networks_2.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/Machine_Learning.jpg)
 
 ---
-## venture_funding_with_deep_learning.ipynb
+## Project2_Group2_Final_Draft.py
 ---
 ### This notebook can be used as a template to build a model that can be used to predict whether a startup loan applicant will become a succesful business based upon a binary classification model. 
 ---
