@@ -1,3 +1,4 @@
+# Import Required Libraries
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -13,16 +14,11 @@ from imblearn.under_sampling import RandomUnderSampler
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-#import hydralit_components as hc
 
 ### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
 
 st.set_page_config(page_title="NN Diabetes Predictions", layout='wide')
 
-#menu_data = [
- #   {'label': 'Project'}, {'label': 'Data Selection'}, {'label': 'Original Data'}, {'label':'Data Preparation'}, {'label': 'User_Input'}, {'label':'Setup ML Model'}, {'label', 'Model Performance'}, {'label': 'Predictions'}, {'label': 'Recommendations'}]
-
-#menu_id = hc.nav_bar(menu_definition=menu_data, sticky_nav=True, sticky_mode='pinned')
 
 # create tab as container
 tab = st.container()
@@ -356,7 +352,6 @@ with tab5:
 
     # Create input form for user/patient to input his/her data
     st.title('Diabetes input form')
-    st.subheader('Units for reference: Glucose in mg/dL, BP in mm Hg, Insulin in uU/mL, BMI in kg/m^2, SkinThickness in mm')
     # make a counter for all the remainign features in this specific model
     model_feature_number = 0
     # make eampty list with answers:    
@@ -370,32 +365,22 @@ with tab5:
             # start counting features
             model_feature_number += 1
 
-        # create input slider for gluvose bloodpressure and insuline
-            if model_feature == 'Glucose' or model_feature == 'BloodPressure':
+            # create input slider for gluvose bloodpressure and insuline
+            if model_feature == 'Glucose' or model_feature == 'BloodPressure' or model_feature == 'Insulin':
                 submitted = str('submitted') + str(model_feature_number)
-                submitted = st.slider(label=model_feature,min_value=0,max_value=200,value=100,step=1,key=model_feature_number)
-                #st.write(submitted)
-                answers.append(submitted)
-            elif model_feature == 'Insulin':
-                submitted = str('submitted') + str(model_feature_number)
-                submitted = st.slider(label=model_feature,min_value=0,max_value=700,value=100,step=1,key=model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=200,key=model_feature_number)
                 #st.write(submitted)
                 answers.append(submitted)
             # create input slider from BMI skinthinkness and age
             elif model_feature == 'BMI' or model_feature =='SkinThickness' or model_feature == 'Age':
                 submitted = str('submitted') + str(model_feature_number)
-                submitted = st.slider(label=model_feature,min_value=0,max_value=100,value=50,step=1,key=model_feature_number)
-                #st.write(submitted)
-                answers.append(submitted)
-            elif model_feature == 'DiabetesPedigreeFunction':
-                submitted = str('submitted') + str(model_feature_number)
-                submitted = st.slider(label=model_feature,min_value=float(0),max_value=float(1),value=0.001,step=float(0.001),key=model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=100,key=model_feature_number)
                 #st.write(submitted)
                 answers.append(submitted)
             # create input values for everything else
             else:
                 submitted = str('submitted') + str(model_feature_number)
-                submitted = st.slider(label=model_feature,min_value=int(0),max_value=int(1),value=int(0),step=int(1),key=model_feature_number)
+                submitted = st.slider(label=model_feature,min_value=0,max_value=15,key=model_feature_number)
                 #st.write(submitted)
                 answers.append(submitted)
 
@@ -638,12 +623,12 @@ with tab8:
     st.subheader('Diabetes prediction based on new input data:')
 
     # create simple high/medium low diabetes risk result
-    if user_input_pred[0] >= 0.50:
+    if user_input_pred[0] >= 0.75:
         st.subheader('RESULT: High Risk of Diabetes')
         st.write('Based on below input variables')
         input_answers = pd.DataFrame(input_answers, columns=features_used_in_model)
         st.write(input_answers)
-    elif user_input_pred[0]>0.25 <0.50:
+    elif user_input_pred[0]>0.50 <=0.75:
         st.subheader('RESULT: Medium Risk of Diabetes')
         st.write('Based on below input variables')
         input_answers = pd.DataFrame(input_answers,columns=features_used_in_model)
@@ -659,79 +644,7 @@ with tab8:
 
 #### JASON Recommendations tab
 with tab9:
-    st.header('Recommendations')
-    #make recommendations based on user input predictions
-    BMI_expander = st.expander(label="Recommendations for your BMI")
-    with BMI_expander:
-        if answers[4] <= 18.5:
-            st.write("You are underweight. Consider increasing calorie intake to acheive a healthier BMI.")
-        elif 18.5<answers[4]<24.9:
-            st.write('Excellent job! You are in a healthy weight range!')
-        elif 25.0<=answers[4]<29.9:
-            st.write('You are overweight. Consider increasing physical activity level and/or decreasing caloric intake. You are at increased risk for diabetes and may benefit from a consultation with a physician and/or nutritionist.')
-        else:
-            st.write('You fall into the obese weight range. You are at high risk for developing diabetes. Please consult a physician to determine your next steps towards obtaining a healthy BMI.')
-    glucose_expander = st.expander(label = 'Recommendations for your glucose level')
-    with glucose_expander:
-        if answers[0] <=99:
-            st.write('Glucose levels normal. Please consult other recommendations.')
-        elif 100<=answers[0]<=125:
-            st.write('Glucose level is in the prediabetic range. You are at significant risk for developing diabetes without lifestyle modifications. Please consult a physician and nutritionist.')
-        else:
-            st.write('You are diabetic. Please seek physician attention immediately to avoid further complications.')
-#data claims 2 hr oral glucose tolerance test used. however, these results would indicate none of the patients have diabetes, though some would fall into the prediabetic category. data is relatively consistent with a fasting plasma glucose tolerance test, which is more common. for a 2 hr oral glucose tolerence test, diabetes is only diagnosed at 200 mg/dL or higher. No patients in this dataset were above 200 mg/dL.
-#sources: https://diabetes.org/diabetes/a1c/diagnosis#:~:text=Oral%20Glucose%20Tolerance%20Test%20(OGTT,how%20your%20body%20processes%20sugar, https://www.mayoclinic.org/tests-procedures/glucose-tolerance-test/about/pac-20394296#:~:text=A%20normal%20fasting%20blood%20glucose,(8.6%20mmol%2FL).
-    bp_expander = st.expander(label = 'Recommendations for your diastolic blood pressure level')
-    with bp_expander:
-        if answers[1] <80:
-            st.write('You have normal blood pressure.')
-        elif 80<=answers[1]<=89:
-            st.write('You have Stage 1 Hypertension. Though this result is minimally related to diabetes, please seek physician attention to determine changes in diet, exercise, and medication.')
-        elif 90<=answers[1]<=120:
-            st.write('You have Stage 2 Hypertension. Though this result is minimally related to diabetes, please seek immediate physician attention to determine changes in diet, exercise, and medication to avoid end organ damage.')
-        else:
-            st.write('You are in hypertensive crisis. Go to the emergency room immediately to avoid heart attack, stroke, cerebral hemorrhage or other life threatening complications.') 
-    pedigree_expander = st.expander(label = 'Recommendations for your diabetes pedigree function')
-    with pedigree_expander:
-        if answers[5] <= 0.448:
-            st.write('You are not at increased risk for diabetes based on your family history.')
-        else:
-            st.write('You are at increased risk for developing diabetes based on your family history.')
-    insulin_expander = st.expander(label = 'Recommendations for your insulin level')
-    with insulin_expander:
-        if answers[3] < 16:
-            st.write('Insulin level low. Please consult a physician immediately to prevent further complications.')
-        elif 16<=answers[3]<=166:
-            st.write('Normal insulin level reported.')
-        else:
-            st.write('Insulin level high. Please consult a physician immediately to prevent further complications.')
-   # insurance_cost_expander = st.expander(label = 'New cost to insurance estimate')
-    #with insurance_cost_expander:
-     #   monthly_insurance_bill = insur_cost * 2.3
-      #  st.write('Your new estimated insurance bill will be $',monthly_insurance_bill)
-    overall_risk_expander = st.expander(label = 'Recommendations for your overall risk for diabetes')
-    with overall_risk_expander:
-        if user_input_pred[0] >0.50:
-            st.write('Based on your cumulative inputs, you are at high risk for diabetes. Please consult a physician.')
-        elif 0.25<user_input_pred[0]<=0.50: 
-            st.write('Based on your cumulative inputs, you are at moderate risk for diabetes. Please consider consulting a physician.')
-        else:
-            st.write('You are not at increased risk for developing diabetes based on your cumulative inputs.')
-   # insurance_expander = st.expander(label = 'Input current medical expenses')
-    #with insurance_expander:
-     #   if user_input_pred[0] >0.50:
-      #      st.write('Given your high risk of diabetes, please input current annual medical expenses to determine additional cost due to diabetes.')
-            #st.number_input(label='In USD')
-       #     int_val = st.number_input('USD', min_value=1, max_value=10000, value=300, step=50)
-         #   int_new= float(st.button(int_val))
-        #    st.write('new cost is', int_new*2.3)
-with tab9:
-    st.header('Medical Expense')            
-    with st.form('Insurance'):
-        insur_cost=st.slider(label='Current monthly medical expenses', min_value=0, max_value=1500, value= 500,step=1,key=10)
-        submitted8 = float(st.form_submit_button('Submit'))
-            
-    insurance_cost_expander = st.expander(label = 'Medical expenses with diabetes diagnosis')
-    with insurance_cost_expander:
-        monthly_insurance_bill = insur_cost * 2.3
-        st.write('Your new estimated medical expenses will be $',round(monthly_insurance_bill, 2))
+    st.header('Recommendations') 
+    ### If high risk ---> whats the cost per individual? 
+    ### what kind of things can we suggest 
+    ### If BMI is 30 --> exercise more --> suggest walking more
