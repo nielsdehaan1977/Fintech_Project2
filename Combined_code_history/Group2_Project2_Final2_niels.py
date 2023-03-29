@@ -85,7 +85,7 @@ with tab1:
     
     st.text('Our aim is to encourage and empower individuals to seek preventative care and reduce their')
     
-    st.text('risk of developing diabetes.') 
+    st.text('of developing diabetes.') 
     
     st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=False)
 
