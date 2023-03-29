@@ -107,9 +107,22 @@ Streamlit can be started by:
  (Currently we only allow for 1 data set to be picked up, but the ultimate goal of the tool is that it can process any dataset that you'd like to run through a Neural Network). 
 
 
-To use the venture funding with deep learning jupyter lab notebook, simply clone the full repository and open the **venture_funding_with_deep_learning.ipynb** file in Jupyter Lab. 
+To use the diabetes prediction app, simply clone the full repository and open the **group2_project2_final3.py** file in streamlit. As instructed above in Step3: Start python file with RUN streamlit. 
 
 The tool will go through the following steps:
+
+1. Description of the project and tool
+2. Data Selection
+3. Overview of Original data
+4. Data Preparation
+5. User Input
+6. Setup of Neural Network Model
+7. Model Performance
+8. Predictions
+9. Recommendations
+
+
+
 
 ### Prepare the data for use on a neural network model.
 * Import of data to analyze
@@ -155,7 +168,7 @@ The tool will go through the following steps:
 * Healthcare costs: https://www.cdc.gov/chronicdisease/programs-impact/pop/diabetes.htm#:~:text=%241%20out%20of%20every%20%244,caring%20for%20people%20with%20diabetes.&text=%24237%20billion%E2%80%A1(a)%20is,(a)%20on%20reduced%20productivity.&text=61%25%20of%20diabetes%20costs%20are,is%20mainly%20paid%20by%20Medicare.
 ## Contributor(s)
 
-This project was created by Niels de Haan (nlsdhn@gmail.com), Jason Steiner (jason.steiner@richmond.edu), 
+This project was created by Niels de Haan (nlsdhn@gmail.com), Jason Steiner (jason.steiner@richmond.edu), Marc Pocorni (
 
 ---
 
