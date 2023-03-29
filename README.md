@@ -12,12 +12,12 @@
 ---
 ## Group2_Project2_Final2.py
 ---
-### This application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a hlepful tool for insurance companies or healthcare organizations to identify patients that have a high risk of becoming diabetic. The tool could allow insurance companies or healthcare organizations to provide preventative care which would save the insurance company a lot of costs and could relieve pressure on the workload in healthcare organizations. 
+### This application was built to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a helpful tool for insurance companies, healthcare organizations, and individuals to determine the risk stratification towards becoming diabetic based on correlated input features. The tool could allow insurance companies, healthcare organizations, and individual patients to take action in providing/recieving preventative care, saving insurance companies and patients billions while relieving pressure on healthcare organizations.
 
 ---
 The tool can help predict based on user input what level of risk an individual is running to become diabetic and also gives an estimate on how much your healthcare insurance premium could increase if no preventative action is taken. 
 
-* The tool goes through on the following tabs/steps (Steps are described in more detail in Usage passage of Readme): 
+* The tool goes through the following tabs/steps (Steps are described in more detail in Usage passage of Readme): 
 1. Description of the project and tool
 2. Data Selection
 3. Overview of Original data
@@ -107,18 +107,39 @@ Streamlit can be started by:
  (Currently we only allow for 1 data set to be picked up, but the ultimate goal of the tool is that it can process any dataset that you'd like to run through a Neural Network). 
 
 
-To use the diabetes prediction app, simply clone the full repository and open the **group2_project2_final3.py** file in streamlit. As instructed above in Step3: Start python file with RUN streamlit. 
+To use the diabetes prediction app, simply clone the full repository and open the **group2_project2_final2.py** file in streamlit. As instructed above in Step3: Start python file with RUN streamlit. 
 
 The tool will go through the following steps:
 
 1. Description of the project and tool
+* application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. 
+
 2. Data Selection
+* Import of data to use for prediction, and press "Load File"
+
+![Data_selection.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/data_selection.jpg)
+
 3. Overview of Original data
+* Review the DataFrame, looking for columns that could eventually define features and target variables. (For this Dataset please use column OUTCOME as your y column)
+
+![original_data.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/overview_original_data.jpg)
+
 4. Data Preparation
+
+
+
 5. User Input
+
+
 6. Setup of Neural Network Model
+
+
 7. Model Performance
+
+
 8. Predictions
+
+
 9. Recommendations
 
 
