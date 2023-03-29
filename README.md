@@ -15,11 +15,18 @@
 ### This application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a hlepful tool for insurance companies or healthcare organizations to identify patients that have a high risk of becoming diabetic. The tool could allow insurance companies or healthcare organizations to provide preventative care which would save the insurance company a lot of costs and could relieve pressure on the workload in healthcare organizations. 
 
 ---
-The tool can help to predict based on user input what level of risk an individual is running to become diabetic and will give that individual an estimate on how much their healthcare insurance premium would go up if they don't take preventative action. 
-* The tool goes through on the following steps: 
-1. Prepare the data for use on a neural network model.
-2. Compile and evaluate a binary classification model using a neural network.
-3. Optimize the neural network model.
+The tool can help predict based on user input what level of risk an individual is running to become diabetic and also gives an estimate on how much your healthcare insurance premium could increase if no preventative action is taken. 
+
+* The tool goes through on the following tabs/steps (Steps are described in more detail in Usage passage of Readme): 
+1. Description of the project and tool
+2. Data Selection
+3. Overview of Original data
+4. Data Preparation
+5. User Input
+6. Setup of Neural Network Model
+7. Model Performance
+8. Predictions
+9. Recommendations
 ---
 ## Table of Content
 
@@ -32,30 +39,39 @@ The tool can help to predict based on user input what level of risk an individua
 ---
 ## Tech
 
-This project leverages python 3.9 and Jupyter Lab with the following packages:
-
-* `Python 3.9`
-* `Jupyter lab`
-
-* [JupyterLab](https://jupyter.org/) - Jupyter Lab is the latest web-based interactive development environment for notebooks, code, and data.
-
+This project leverages python 3.9 with the following packages:
+```
+`Python 3.9`
+```
 * [Path](https://docs.python.org/3/library/pathlib.html) - This module offers classes representing filesystem paths with semantics appropriate for different operating systems.
 
 * [pandas](https://pandas.pydata.org/pandas-docs/stable/index.html) - Pandas is an open source, BSD-licensed library providing high-performance, easy-to-use data structures and data analysis tools for the Python programming language.
 
-* [concat](https://pandas.pydata.org/docs/reference/api/pandas.concat.html) - Concatenate pandas objects along a particular axis
-
 * [numpy](https://numpy.org/doc/stable/index.html) - NumPy is the fundamental package for scientific computing in Python.
+
+* [streamlit](https://streamlit.io/) - Streamlit is an open-source Python library that makes it easy to create and share, custom web apps for machine learning and data science.
+
+* [tensorflow](https://www.tensorflow.org/) - tensorflow library provides end-to-end machine learning solutions
+
+* [Dense](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense) - Dense implements the operation: output = activation(dot(input, kernel) + bias) where activation is the element-wise activation function passed as the activation argument, kernel is a weights matrix created by the layer, and bias is a bias vector created by the layer (only applicable if use_bias is True).
+
+* [Sequential](https://www.tensorflow.org/guide/keras/sequential_model) - A Sequential model is appropriate for a plain stack of layers where each layer has exactly one input tensor and one output tensor.
+
+* [modelfromjson](https://www.tensorflow.org/api_docs/python/tf/keras/models/model_from_json) - Parses a JSON model configuration string and returns a model instance.
+
+* [train_test_split](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html) - Split arrays or matrices into random train and test subsets.
 
 * [StandardScaler](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html) - Standardization of a dataset is a common requirement for many machine learning estimators: they might behave badly if the individual features do not more or less look like standard normally distributed data (e.g. Gaussian with 0 mean and unit variance).
 
 * [OneHotEncoder](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) - The input to this transformer should be an array-like of integers or strings, denoting the values taken on by categorical (discrete) features. This creates a binary column for each category and returns a sparse matrix or dense array (depending on the sparse_output parameter)
 
-* [train_test_split](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html) - Split arrays or matrices into random train and test subsets.
+* [Randomoversampler](https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.RandomOverSampler.html) - Object to over-sample the minority class(es) by picking samples at random with replacement. The bootstrap can be generated in a smoothed manner.
 
-* [Dense](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense) - Dense implements the operation: output = activation(dot(input, kernel) + bias) where activation is the element-wise activation function passed as the activation argument, kernel is a weights matrix created by the layer, and bias is a bias vector created by the layer (only applicable if use_bias is True).
+* [Randomundersampler](https://imbalanced-learn.org/stable/references/under_sampling.html) - The imblearn.under_sampling provides methods to under-sample a dataset.
 
-* [Sequential](https://www.tensorflow.org/guide/keras/sequential_model) - A Sequential model is appropriate for a plain stack of layers where each layer has exactly one input tensor and one output tensor.
+* [seaborn](https://seaborn.pydata.org/examples/many_pairwise_correlations.html) - Seaborn is a Python data visualization library based on matplotlib. It provides a high-level interface for drawing attractive and informative statistical graphics.
+
+* [matplolib](https://matplotlib.org/3.5.3/api/_as_gen/matplotlib.pyplot.html) - matplotlib.pyplot is a state-based interface to matplotlib. It provides an implicit, MATLAB-like, way of plotting. It also opens figures on your screen, and acts as the figure GUI manager.
 
 ---
 
@@ -83,6 +99,9 @@ Jupyter Lab can be started by:
 
 
 ## Usage
+
+ (Currently we only allow for 1 data set to be picked up, but the ultimate goal of the tool is that it can process any dataset that you'd like to run through a Neural Network). 
+
 
 To use the venture funding with deep learning jupyter lab notebook, simply clone the full repository and open the **venture_funding_with_deep_learning.ipynb** file in Jupyter Lab. 
 

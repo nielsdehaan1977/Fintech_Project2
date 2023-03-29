@@ -74,7 +74,7 @@ with tab1:
 
     st.text('In this project we try to predict if a person has diabetes using machine learning')
     
-    st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=True)
+    st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=False)
 
 ### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
 @st.cache_data
@@ -557,7 +557,7 @@ with tab7:
     st.header('Performance of Model:')
 
     # Display the model loss and accuracy results
-    # HERE AGAIN WE ALREADY INCLUDED THE OTPION TO USE REGRESSION TO UNLOCK ADD REGRESSION TO OUTPUT_GOAL VARIABLE
+    # HERE AGAIN WE ALREADY INCLUDED THE OTPION TO USE REGRESSION, TO UNLOCK ADD REGRESSION TO OUTPUT_GOAL VARIABLE
     #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
     if compile_loss_select == 'Probalistic':
         st.subheader('Neural Network Loss and Model Accuracy')
