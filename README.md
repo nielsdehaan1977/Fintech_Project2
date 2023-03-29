@@ -115,17 +115,35 @@ The tool will go through the following steps:
 * application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. 
 
 2. Data Selection
-* Import of data to use for prediction, and press "Load File"
+* STEP 1: Import of data to use for prediction, and press "Load File"
 
 ![Data_selection.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/data_selection.jpg)
 
 3. Overview of Original data
-* Review the DataFrame, looking for columns that could eventually define features and target variables. (For this Dataset please use column OUTCOME as your y column)
+* STEP 2: Review the DataFrame, looking for columns that could eventually define features and target variables. (For this Dataset please use column OUTCOME as your y column)
 
 ![original_data.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/overview_original_data.jpg)
 
-4. Data Preparation
+4. STEP 3: Data Preparation
 
+* STEP 3.1: Review data frame and correlation matrix to decide which features to use for the model by removing columns (or adding columns back) and press Select Features
+![step31.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step3_1.jpg)
+
+* STEP 3.2: Handling of categorical variables. The used dataset does not have categorical values, but the tool is setup to also handle dataset that contain categorical variables. 
+
+![step32.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step3_2.jpg)
+
+* STEP 3.3.1: Option to apply Standard Scaler to the dataset. 
+
+![step331.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step3_3_1.jpg)
+
+* STEP 3.3.2 Option to change the size of the test data to be use.
+
+![step332.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step3_3_2.jpg)
+
+* STEP 3.4: Option to apply RandomOverSampler, RandomUnderSampler or use no Sampling: 
+
+![step34.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step3_4.jpg)
 
 
 5. User Input
