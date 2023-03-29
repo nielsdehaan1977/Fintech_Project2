@@ -148,45 +148,54 @@ The tool will go through the following steps:
 
 5. User Input
 
+* STEP 4: Patient prediction input form (Form adjusts/is dependent on which X features are chosen in step 3.1) 
+
+* Input patients information into the patient input form: 
+
+![step4.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step4.jpg)
+
 
 6. Setup of Neural Network Model
+
+* Select purpose of model (For the dataset used only probalistic is necessary, tool is setup to easily facilitate other purposes but not currently unlocked)
+
+![step6.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step61.jpg)
+
+* Compile and fit the model select loss function, and optimizer. 
+
+![step621.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step621.jpg)
+
+* Select Output Layers, number of nodes in layer1 and activation, select number of nodes in layer2 and activation
+
+![step622.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step622.jpg)
+
+* Select amount of EPOCHs to run and Press Apply and Run Button
+
+![step623.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step623.jpg)
+
+* Save and export your model to an HDF5 file
+
+
+![step624.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step624.jpg)
+
 
 
 7. Model Performance
 
+* Evaluate the model using the test data to determine the model’s loss and accuracy.
+
+![step7.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step7.jpg)
+
 
 8. Predictions
+
+* Predictions made based on loaded model and input variable of patient. 
+
+![step8.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step8.jpg)
 
 
 9. Recommendations
 
-
-
-
-### Prepare the data for use on a neural network model.
-* Import of data to analyze
-* Review the DataFrame, looking for categorical variables that will need to be encoded, as well as columns that could eventually define features and target variables.
-* Encode the dataset’s categorical variables using OneHotEncoder, and then place the encoded variables into a new DataFrame. 
-* Add the original DataFrame’s numerical variables to the DataFrame containing the encoded variables.
-* Using the preprocessed data, create the features (X) and target (y) datasets.
-* Split the features and target sets into training and testing datasets.
-* Use scikit-learn's StandardScaler to scale the features data.
-
-### Compile and evaluate a binary classification model using a neural network.
-* Create a deep neural network by assigning the number of input features, the number of layers, and the number of neurons on each layer using Tensorflow’s Keras.
-* Compile and fit the model using the binary_crossentropy loss function, the adam optimizer, and the accuracy evaluation metric.
-* Evaluate the model using the test data to determine the model’s loss and accuracy.
-* Save and export your model to an HDF5 file
-
-### Optimize the neural network model.
-* Define three new deep neural network models (resulting in the original plus 3 optimization attempts). With each, try to improve on your first model’s predictive accuracy.
-* Excecuted model with removing 1 of the columns every run, to see if there are any columns that have limited impact on the model
-* Add an additional hidden layer and run the model with different amounts of hidden nodes and evaluate the results
-* Change activation functions for the hidden layers and change the number of epoch in the training regimen and evaluate the results. 
-
-
-
-## Recommendations
 * Recommendations are specific to patient/user input data. 
 * BMI separated into underweight, healthy weight, overweight and obese. 
 * Glucose level recommendations (normal, prediabetic, diabetic) are based on fasting plasma glucose levels. Though the dataset claims that a 2 hr oral glucose tolerance test (OGTT) was used, these glucose levels would indicate no patients are diabetic. However, these datapoints are relatively consistent with what would be seen with fasting plasma glucose (FPG) tests.
