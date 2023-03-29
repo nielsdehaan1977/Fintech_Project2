@@ -179,7 +179,6 @@ The tool will go through the following steps:
 ![step624.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step624.jpg)
 
 
-
 7. Model Performance
 
 * Evaluate the model using the test data to determine the model’s loss and accuracy.
@@ -194,7 +193,10 @@ The tool will go through the following steps:
 ![step8.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step8.jpg)
 
 
-9. Recommendations
+9. Recommendations and Medical Expenses
+
+![step9.jpg](https://github.com/nielsdehaan1977/Fintech_Project2/blob/main/Images/step9.jpg)
+
 
 * Recommendations are specific to patient/user input data. 
 * BMI separated into underweight, healthy weight, overweight and obese. 
