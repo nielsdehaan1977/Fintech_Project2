@@ -13,16 +13,14 @@ from imblearn.under_sampling import RandomUnderSampler
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-#import hydralit_components as hc
+#from sklearn.ensemble import RandomForestClassifier
+#import lime
+#import lime.lime_tabular
 
 ### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
 
 st.set_page_config(page_title="NN Diabetes Predictions", layout='wide')
 
-#menu_data = [
- #   {'label': 'Project'}, {'label': 'Data Selection'}, {'label': 'Original Data'}, {'label':'Data Preparation'}, {'label': 'User_Input'}, {'label':'Setup ML Model'}, {'label', 'Model Performance'}, {'label': 'Predictions'}, {'label': 'Recommendations'}]
-
-#menu_id = hc.nav_bar(menu_definition=menu_data, sticky_nav=True, sticky_mode='pinned')
 
 # create tab as container
 tab = st.container()
@@ -72,10 +70,34 @@ with tab1:
 
     st.subheader('Diabetes Predictions')
 
-    st.text('In this project we try to predict if a person has diabetes using machine learning')
+    st.text('The purpose of this application is to predict if a patient is at high risk for developing')
+    st.text('diabetes using an adaptable neural network and machine learning models. While the base neural')          
+    st.text('network is adaptable, the predictions and recommendations in this project are specific to')
+    
+    st.text('diabetes. We used an anonymized dataset of Pima Indian women (https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database)')
+    
+    st.text('to predict diabetes outcomes and evaluate risk. Moving from our predictive model, we allow')
+    
+    st.text('users/patents to input their own features to run through the neural network and provide')
+    
+    st.text('recommendations for specific features and overall risk. We chose to focus on diabetes for')
+    
+    st.text('this project because 1/4 of healthcare spending in the USA is on diabetes-associated care.')
+    
+    st.text('On average, a diabetes diagnosis increases medical expenses by 230%. These costs amount to')
+    
+    st.text('$237B in direct costs and an additional $90B in estimated productivity loss in the US alone.')
+    
+    st.text('Our aim is to encourage and empower individuals to seek preventative care and reduce their')
+    
+    st.text('of developing diabetes.') 
+#(https://www.cdc.gov/chronicdisease/programs-impact/pop/diabetes.htm#:~:text=%241%20out%20of%20every%20%244,caring%20for%20people%20with%20diabetes.&text=%24237%20billion%E2%80%A1(a)%20is,(a)%20on%20reduced%20productivity.&text=61%25%20of%20diabetes%20costs%20are,is%20mainly%20paid%20by%20Medicare).)
     
     st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=False)
 
+    st.text('Our model allows users to select activation and loss functions, optimizers, NN layers,')
+    st.text('epochs, and sampling conditions as to best fit their desired outcomes.')
+    
 ### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
 @st.cache_data
 def load_selected_data(data_file_path):
@@ -557,7 +579,7 @@ with tab7:
     st.header('Performance of Model:')
 
     # Display the model loss and accuracy results
-    # HERE AGAIN WE ALREADY INCLUDED THE OTPION TO USE REGRESSION, TO UNLOCK ADD REGRESSION TO OUTPUT_GOAL VARIABLE
+    # HERE AGAIN WE ALREADY INCLUDED THE OTPION TO USE REGRESSION TO UNLOCK ADD REGRESSION TO OUTPUT_GOAL VARIABLE
     #loss_accuracy = print(f"Loss: {model_loss}, Accuracy: {model_accuracy}")
     if compile_loss_select == 'Probalistic':
         st.subheader('Neural Network Loss and Model Accuracy')
@@ -596,6 +618,12 @@ with tab7:
         st.write(nn_characteristics)   
     else:
         pass
+
+
+
+ #LIME (Local Interpretable Modalagnostic Explanations) ML model interpretation
+    #https://towardsdatascience.com/lime-how-to-interpret-machine-learning-models-with-python-94b0e7e4432e
+    #create model instance
 
 
 #### MARC

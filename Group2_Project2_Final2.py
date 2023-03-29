@@ -13,11 +13,7 @@ from imblearn.under_sampling import RandomUnderSampler
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-#from sklearn.ensemble import RandomForestClassifier
-#import lime
-#import lime.lime_tabular
 
-### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
 
 st.set_page_config(page_title="NN Diabetes Predictions", layout='wide')
 
@@ -59,8 +55,7 @@ activations_layers = ['relu','selu','elu','exponential','gelu','hard_sigmoid','l
 
 # create selectbox for sampling oversampling, undersampling or no sampling (use dataset as is)
 sampling_dataset = ['None','RandomOverSampler','RandomUnderSampler']
-
-### JASON --- Introduction to why this app is useful for insurance companies... 
+ 
 # INTRODUCTION TAB PROJECT OBJECTIVE
 with tab1:
 
@@ -91,14 +86,13 @@ with tab1:
     st.text('Our aim is to encourage and empower individuals to seek preventative care and reduce their')
     
     st.text('of developing diabetes.') 
-#(https://www.cdc.gov/chronicdisease/programs-impact/pop/diabetes.htm#:~:text=%241%20out%20of%20every%20%244,caring%20for%20people%20with%20diabetes.&text=%24237%20billion%E2%80%A1(a)%20is,(a)%20on%20reduced%20productivity.&text=61%25%20of%20diabetes%20costs%20are,is%20mainly%20paid%20by%20Medicare).)
     
     st.image(os.path.join(images_path,'Neural_Networks_2.jpg'),use_column_width=False)
 
     st.text('Our model allows users to select activation and loss functions, optimizers, NN layers,')
     st.text('epochs, and sampling conditions as to best fit their desired outcomes.')
     
-### NIELS -- Streamlit development --- INTRODUCE CACHING of DATAFRAME
+###INTRODUCE CACHING of DATAFRAME
 @st.cache_data
 def load_selected_data(data_file_path):
     df = pd.read_csv(data_file_path)
@@ -106,7 +100,6 @@ def load_selected_data(data_file_path):
     df = df.dropna(axis='columns',how='all')
     return df
 
-### NIELS Streamlit app development
 # Create a TAB where user can select any csv file from set folder
 with tab2:
     
@@ -141,7 +134,6 @@ with tab2:
         # Read selected file with read_csv
         df = load_selected_data(data_file_path)
 
-### NIELS 
 # Create a TAB where user can select Y column for machine Learning Model.       
 with tab3:
 
@@ -174,7 +166,7 @@ with tab3:
         # Display which Y column is currently selected
         st.subheader(f'Current Selected y Column is: {label_select}')
 
-### MARC data cleaning _- 
+        
 #Create a TAB wehere user can enhance the dataset
 with tab4:
 
@@ -440,7 +432,7 @@ with tab5:
             pass
 
 
-#### NIELS Setup of Neural Network and option to save NN
+#### Setup of Neural Network and option to save NN
 with tab6:
     st.header('STEP 6: Setup of Neural Network, for selected OUTCOME column is model should be Probalistic')
     
@@ -573,7 +565,6 @@ with tab6:
         st.subheader('ONCE HAPPY WITH LOSS AND ACCURACY OF THE MODEL PLEASE PROCEED STEP 7: MODEL PERFOMANCE (FOR MORE DETAIL MODEL INFO)')
 
 
-### ANDRE
 # Model Performace TAB
 with tab7:
     st.header('Performance of Model:')
@@ -620,13 +611,6 @@ with tab7:
         pass
 
 
-
- #LIME (Local Interpretable Modalagnostic Explanations) ML model interpretation
-    #https://towardsdatascience.com/lime-how-to-interpret-machine-learning-models-with-python-94b0e7e4432e
-    #create model instance
-
-
-#### MARC
 # Load Model and create Tab with Form fo ruser to put in patient values and make a prediction
 with tab8:
     st.header('Predictions')
@@ -643,9 +627,6 @@ with tab8:
     # USE LOADED MODEL TO PREDICT POINTS FOR THE TEST DATA
     y_pred = loaded_model.predict(X_test)
 
-    #st.write('Model Predictions based on Test Data')
-    #results_model_test = y_pred[:2,:]
-    #st.write(results_model_test)
 
     # check if stardard scaler was applied to model input data
     if standard_scaler_select == 'Yes':
@@ -703,7 +684,7 @@ with tab8:
 
 
 
-#### JASON Recommendations tab
+###Recommendations tab
 with tab9:
     st.header('Recommendations')
     #make recommendations based on user input predictions
@@ -751,10 +732,7 @@ with tab9:
             st.write('Normal insulin level reported.')
         else:
             st.write('Insulin level high. Please consult a physician immediately to prevent further complications.')
-   # insurance_cost_expander = st.expander(label = 'New cost to insurance estimate')
-    #with insurance_cost_expander:
-     #   monthly_insurance_bill = insur_cost * 2.3
-      #  st.write('Your new estimated insurance bill will be $',monthly_insurance_bill)
+   
     overall_risk_expander = st.expander(label = 'Recommendations for your overall risk for diabetes')
     with overall_risk_expander:
         if user_input_pred[0] >0.50:
@@ -763,14 +741,7 @@ with tab9:
             st.write('Based on your cumulative inputs, you are at moderate risk for diabetes. Please consider consulting a physician.')
         else:
             st.write('You are not at increased risk for developing diabetes based on your cumulative inputs.')
-   # insurance_expander = st.expander(label = 'Input current medical expenses')
-    #with insurance_expander:
-     #   if user_input_pred[0] >0.50:
-      #      st.write('Given your high risk of diabetes, please input current annual medical expenses to determine additional cost due to diabetes.')
-            #st.number_input(label='In USD')
-       #     int_val = st.number_input('USD', min_value=1, max_value=10000, value=300, step=50)
-         #   int_new= float(st.button(int_val))
-        #    st.write('new cost is', int_new*2.3)
+
 with tab9:
     st.header('Medical Expense')            
     with st.form('Insurance'):
