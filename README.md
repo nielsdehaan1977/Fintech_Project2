@@ -12,7 +12,7 @@
 ---
 ## Group2_Project2_Final2.py
 ---
-### This application was build to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a hlepful tool for insurance companies or healthcare organizations to identify patients that have a high risk of becoming diabetic. The tool could allow insurance companies or healthcare organizations to provide preventative care which would save the insurance company a lot of costs and could relieve pressure on the workload in healthcare organizations. 
+### This application was built to provide both a flexible way to create a Neural Network model and to use that same model to provide predictions on the level of risk an individual runs to becoming diabetic. The general idea of the application is to provide a helpful tool for insurance companies, healthcare organizations, and individuals to determine the risk stratification towards becoming diabetic based on correlated input features. The tool could allow insurance companies, healthcare organizations, and individual patients to take action in providing/recieving preventative care, saving insurancce companies and patients billions while relieving pressure on healthcare organizations. 
 
 ---
 The tool can help predict based on user input what level of risk an individual is running to become diabetic and also gives an estimate on how much your healthcare insurance premium could increase if no preventative action is taken. 
